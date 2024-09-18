@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}My Blog{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<header><nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+
+      
+      <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value="{{ request.GET.query }}" name="query" >
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        {% if query %}
+        <h3 class="mt-4">Results for "{{ query }}"</h3>
+        <ul class="list-group">
+            {% for post in results %}
+                <li class="list-group-item">
+                    <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No results found.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+      </form>
+
+      
+
+    </div>
+  </nav>
+</header>
+
+<h1>Blog Posts</h1>
+<ul>
+    {% for post in posts %}
+    <li><a href="#">{{ post.title }}</a> by {{ post.author }} on {{ post.created_at }}</li>
+    {% endfor %}
+</ul>
+<!-- Pagination Section -->
+<div class="pagination">
+    <span class="step-links">
+        {% if posts.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        {% for post in posts %}
+        <div class="row ">
+            <div class="col-md-6">
+                <div class="media blog-media">
+                  <a href="blog-post-left-sidebar.html"><img class="d-flex" src="https://www.bootdey.com/image/350x380/6495ED/000000" alt="Generic placeholder image"></a>
+                  <div class="circle">
+                      <h5 class="day">14</h5>
+                      <span class="month"><p>{{ post.created_at }}</p></span>
+                  </div>
+                  <div class="media-body">
+                    <a href=""><h5 class="mt-0">{{ post.title }}</h5></a>
+                  <li>{{ post.content}}</li>
+                    <a href="blog-post-left-sidebar.html" class="post-link">Read More</a>
+                    <ul>
+                        <li>{{ post.author }}</li>
+                        <li class="text-right"><a href="blog-post-left-sidebar.html">07 comments</a></li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+
+        <span class="current">
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">next</a>
+            <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+
+
+</body>
+</html>
